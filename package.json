@@ -41,7 +41,9 @@
     "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
     "test": "vitest run",
     "build": "tsc",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "build:netlify": "npm run build && node scripts/build-netlify.mjs",
+    "check:netlify": "npm run build:netlify && node scripts/check-netlify.mjs"
   },
   "dependencies": {
     "sigstore": "^5.0.0"
@@ -55,6 +57,7 @@
     "tsx": "^4.0.0",
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.71.1",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "esbuild": "^0.28.2"
   }
 }

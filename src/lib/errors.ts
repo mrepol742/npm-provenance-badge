@@ -5,7 +5,7 @@ export type ErrorCode =
   | 'VERIFICATION_FAILED'
   | 'RATE_LIMITED'
   | 'LIMIT_EXCEEDED';
-  
+
 export class ProvenanceError extends Error {
   constructor(
     public readonly code: ErrorCode,

@@ -10,7 +10,7 @@ export class MemoryCache<T> implements Cache<T> {
   ) {
     positiveInteger(capacity, 'cache capacity');
   }
-  
+
   async get(key: string): Promise<T | undefined> {
     const entry = this.values.get(key);
     if (!entry) return undefined;
@@ -20,7 +20,7 @@ export class MemoryCache<T> implements Cache<T> {
     }
     return structuredClone(entry.value);
   }
-  
+
   async set(key: string, value: T, ttlMs: number): Promise<void> {
     this.values.delete(key);
     if (this.values.size >= this.capacity)

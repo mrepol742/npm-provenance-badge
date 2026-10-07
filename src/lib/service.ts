@@ -52,7 +52,7 @@ export function createProvenanceService(options: ServiceOptions = {}) {
   // Shared across scans: no more than concurrency active package checks.
   let activeChecks = 0;
   const waiters: (() => void)[] = [];
-  
+
   async function limited<T>(work: () => Promise<T>): Promise<T> {
     if (activeChecks >= concurrency)
       await new Promise<void>((resolve) => waiters.push(resolve));
@@ -65,7 +65,7 @@ export function createProvenanceService(options: ServiceOptions = {}) {
       else activeChecks--;
     }
   }
-  
+
   async function stats(
     input: string,
     type: PublisherType = 'user',
@@ -73,18 +73,18 @@ export function createProvenanceService(options: ServiceOptions = {}) {
     const publisher = parsePublisher(input, type);
     const key = `provenance:v1:${publisher.key}`;
     const hit = await cache.get(key);
-    
+
     if (hit) return structuredClone(hit);
     const existing = pending.get(key);
-    
+
     if (existing) return structuredClone(await existing);
     const failure = await failures.get(key);
-    
+
     if (failure)
       throw new ProvenanceError(failure.code, failure.message, failure.status);
     // Cache adapters may yield; recheck after the final awaited lookup.
     const raced = pending.get(key);
-    
+
     if (raced) return structuredClone(await raced);
     if (pending.size >= maxScans)
       throw new ProvenanceError('RATE_LIMITED', 'Scan capacity reached', 429);
@@ -120,7 +120,7 @@ export function createProvenanceService(options: ServiceOptions = {}) {
             },
           ),
         );
-        
+
         if (failed) throw failed;
         const result: ProvenanceStats = {
           publisher:
@@ -147,7 +147,7 @@ export function createProvenanceService(options: ServiceOptions = {}) {
         pending.delete(key);
       }
     })();
-    
+
     pending.set(key, scan);
     return structuredClone(await scan);
   }

@@ -216,6 +216,40 @@ Tests mock npm responses and the Sigstore verification boundary. They exercise
 positive aggregation, verification delegation and fail-closed behavior. They do not depend on live npm or Sigstore services.
 CI runs the five requested checks on Node 22, 24 and 26.
 
+## Netlify deployment
+
+The repository includes a Netlify Node Function and `netlify.toml`. Import the
+repository into Netlify; its build command is `npm run build:netlify`, its publish
+directory is `public`, and its function directory is `netlify/functions`.
+Set `AWS_LAMBDA_JS_RUNTIME=nodejs24.x` in Netlify's environment settings and
+redeploy. The build uses Node 24. The routes remain `/badge/:publisher` and
+`/api/provenance/:publisher`.
+
+The Netlify build first bundles the app, Sigstore, its proxy dependencies and
+its JSON trust seeds into `.netlify/bundle/app.mjs`. A Node `createRequire` shim
+supports built-in CommonJS imports. Do not externalize `sigstore` in
+`netlify.toml`: the unbundled dependency graph currently requires ESM-only proxy
+agents from CommonJS. AWS Lambda disables `require(esm)` by default, which causes
+`ERR_REQUIRE_ESM` during function startup. This packaging avoids that dependency
+on experimental runtime flags; `NODE_OPTIONS=--experimental-require-module` is
+not required. See [Lambda's runtime documentation](https://docs.aws.amazon.com/lambda/latest/dg/lambda-nodejs.html).
+
+Run `npm run check:netlify` before deployment. It builds the function into an
+isolated temporary directory, starts Node with `require(esm)` disabled, mocks
+npm search, and exercises both public routes. It also rejects required external npm
+imports in the generated artifact (the optional Kerberos proxy addon is unused). No live upstream is used by this check.
+
+On warm instances, the aggregate memory cache is reused. Successful responses
+also use Netlify's durable CDN cache for 30 minutes, with query-aware variation;
+errors remain uncached. Sigstore's writable trust cache uses `/tmp`.
+
+Netlify synchronous functions have a 60-second execution limit. Large cold scans
+can exceed it. For those publishers, add shared aggregate storage and a
+background refresh worker before relying on this deployment for production.
+Memory concurrency and rate limits remain per instance. Use Netlify's edge rate
+limiting for protection across instances. See
+[Netlify function configuration](https://docs.netlify.com/build/functions/configuration/).
+
 ## Deployment
 
 Build with `npm ci && npm run build`, then run `npm start` behind an HTTPS reverse

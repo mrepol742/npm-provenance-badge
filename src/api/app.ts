@@ -35,7 +35,7 @@ export function createApp(options: AppOptions = {}) {
         "default-src 'none'; style-src 'unsafe-inline'",
       'cache-control': 'no-store',
     };
-    
+
     try {
       let client = clients.get(clientId);
       if (!client || client.expires <= now()) {
@@ -112,7 +112,7 @@ export function createApp(options: AppOptions = {}) {
           ? 'image/svg+xml; charset=utf-8'
           : 'application/json; charset=utf-8',
       };
-      
+
       return new Response(
         request.method === 'HEAD'
           ? null
@@ -156,7 +156,7 @@ export function createApp(options: AppOptions = {}) {
           },
         );
       }
-      
+
       return new Response(
         request.method === 'HEAD'
           ? null

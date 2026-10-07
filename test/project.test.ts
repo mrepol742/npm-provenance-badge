@@ -44,7 +44,7 @@ function attestation(rel: Release = release()) {
       },
     ],
   };
-  
+
   return {
     attestations: [
       {

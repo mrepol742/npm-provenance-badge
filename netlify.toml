@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npm run build:netlify"
   publish = "public"
 
 [build.environment]
@@ -8,4 +8,4 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["sigstore"]
+  # Sigstore is prebundled to support Lambda with require(esm) disabled.

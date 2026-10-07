@@ -1,5 +1,5 @@
 import type { Config, Context } from '@netlify/functions';
-import { createApp } from '../../dist/api/app.js';
+import { createApp } from '../../.netlify/bundle/app.mjs';
 
 process.env.XDG_DATA_HOME = '/tmp';
 
