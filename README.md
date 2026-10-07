@@ -1,4 +1,4 @@
-# npm-provenance-stats
+# npm-provenance-stats ![https://npm-provenance-badge.netlify.app/badge/mrepol742](https://npm-provenance-badge.netlify.app/badge/mrepol742)
 
 A TypeScript library and dynamic SVG badge service for npm provenance coverage.
 It measures adoption; public responses never list individual packages.
